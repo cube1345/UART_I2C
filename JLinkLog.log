@@ -1,0 +1,20 @@
+T4088 000:003.884   SEGGER J-Link V8.74 Log File
+T4088 000:004.579   DLL Compiled: Sep 30 2025 12:11:23
+T4088 000:004.617   Logging started @ 2026-02-11 10:37
+T4088 000:004.647   Process: C:\Users\Cube\.eclipse\com.renesas.platform_1367048001\DebugComp\RA\e2-server-gdb.exe
+T4088 000:004.714 - 4.675ms 
+T4088 000:004.789 JLINK_GetDLLVersion()
+T4088 000:004.821 - 0.037ms returns 87400
+T4088 000:325.562 JLINK_OpenEx(...)
+T4088 000:340.664   Looking for J-Link GUI Server exe at: C:\Users\Cube\.eclipse\com.renesas.platform_1367048001\DebugComp\RA\ARM\Segger_v8.74.0\JLinkGUIServer.exe
+T4088 000:341.178   Looking for J-Link GUI Server exe at: E:\EmbeddedDevelopment\SoftWare\Tools\JLink_V912\JLinkGUIServer.exe
+T4088 000:341.333   Forking J-Link GUI Server: E:\EmbeddedDevelopment\SoftWare\Tools\JLink_V912\JLinkGUIServer.exe
+T4088 000:891.153   Failed to connect to J-Link GUI Server.
+T4088 000:891.259   
+  ***** Error: 
+T4088 000:891.287   Cannot connect to J-Link.
+T4088 000:891.660 - 566.098ms returns "Cannot connect to J-Link."
+T4088 007:091.342 JLINK_Close()
+T4088 007:093.145 - 1.802ms
+T4088 007:093.336   
+T4088 007:093.353   Closed
