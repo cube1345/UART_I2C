@@ -20,7 +20,7 @@
     <node id="board.clock.loco.freq" option="board.clock.loco.freq.32768"/>
     <node id="board.clock.moco.freq" option="board.clock.moco.freq.8m"/>
     <node id="board.clock.subclk.freq" option="board.clock.subclk.freq.32768"/>
-    <node id="board.clock.pll.source" option="board.clock.pll.source.xtal"/>
+    <node id="board.clock.pll.source" option="board.clock.pll.source.hoco"/>
     <node id="board.clock.pll.div" option="board.clock.pll.div.2"/>
     <node id="board.clock.pll.mul" option="board.clock.pll.mul.300"/>
     <node id="board.clock.pll.display" option="board.clock.pll.display.value"/>
@@ -33,7 +33,7 @@
     <node id="board.clock.uclk.source" option="board.clock.uclk.source.disabled"/>
     <node id="board.clock.iclk.div" option="board.clock.iclk.div.2"/>
     <node id="board.clock.pclka.div" option="board.clock.pclka.div.2"/>
-    <node id="board.clock.pclkb.div" option="board.clock.pclkb.div.4"/>
+    <node id="board.clock.pclkb.div" option="board.clock.pclkb.div.2"/>
     <node id="board.clock.pclkc.div" option="board.clock.pclkc.div.4"/>
     <node id="board.clock.pclkd.div" option="board.clock.pclkd.div.2"/>
     <node id="board.clock.fclk.div" option="board.clock.fclk.div.4"/>
@@ -54,6 +54,8 @@
       <configSetting altId="debug0.swdio.p108" configurationId="debug0.swdio" isUsedByDriver="true" peripheral="DEBUG0"/>
       <configSetting altId="iic0.scl.p408" configurationId="iic0.scl" isUsedByDriver="true" peripheral="IIC0"/>
       <configSetting altId="iic0.sda.p407" configurationId="iic0.sda" isUsedByDriver="true" peripheral="IIC0"/>
+      <configSetting altId="sci4.rxd.p206" configurationId="sci4.rxd" isUsedByDriver="true" peripheral="SCI4"/>
+      <configSetting altId="sci4.txd.p207" configurationId="sci4.txd" isUsedByDriver="true" peripheral="SCI4"/>
       <configSetting altId="sci9.rxd.p110" configurationId="sci9.rxd" isUsedByDriver="true" peripheral="SCI9"/>
       <configSetting altId="sci9.txd.p109" configurationId="sci9.txd" isUsedByDriver="true" peripheral="SCI9"/>
     </pincfg>
