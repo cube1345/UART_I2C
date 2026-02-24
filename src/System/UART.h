@@ -4,13 +4,14 @@
 #include "hal_data.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdbool.h>
 
-/* 全局变量声明 (供外部查询状态) */
-extern volatile bool uart_send_complete_flag;
 extern volatile uint8_t g_rx_char;
 extern volatile bool    g_rx_flag;
+extern volatile int32_t k210_x;
+extern volatile int32_t k210_y;
+extern volatile bool    k210_ready;
 
-/* 函数声明 */
 void UART_Init(void);
 void UART_Printf(const char * format, ...);
 

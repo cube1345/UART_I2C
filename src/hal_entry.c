@@ -1,59 +1,86 @@
 #include "hal_data.h"
 #include "UART.h"
-#include "I2C.h"
+#include "GimbalControl.h"
+#include "TrackingPID.h"
 #include "MotorModule.h"
 #include "Car.h"
-#include "BlueTooth.h"
+
+// 引用外部变量
+extern volatile int32_t k210_x;
+extern volatile int32_t k210_y;
+extern volatile bool    k210_ready;
+extern PID_Ctrl pid_pan;
+extern PID_Ctrl pid_tilt;
+
+// 函数声明
+void R_BSP_WarmStart(bsp_warm_start_event_t event);
 
 void hal_entry(void)
 {
-    /* 1. 初始化 UART */
+    /* --- 1. 系统初始化与欢迎信息 --- */
     UART_Init();
+    UART_Printf("\r\n***************************************\r\n");
+    UART_Printf("*    RA4M2 Gimbal Tracking System     *\r\n");
+    UART_Printf("*    Status: Initializing...          *\r\n");
+    UART_Printf("***************************************\r\n");
 
-    UART_Printf("\r\n============================\r\n");
-    UART_Printf(">>> System Power On! Modules Init... <<<\r\n");
-    UART_Printf("============================\r\n");
-
-    /* 2. 初始化 I2C */
-    I2C_Init();
-    R_BSP_SoftwareDelay(200, BSP_DELAY_UNITS_MILLISECONDS);
-
-    /* 3. 初始化电机 */
-    UART_Printf("Init Motors...\r\n");
+    /* --- 2. 初始化各硬件模块 --- */
+    UART_Printf("[1/4] Motors & I2C...");
     Motor_Init();
+    UART_Printf(" OK!\r\n");
 
-    UART_Printf("Bluetooth Control Ready! Send Hex: 01-07\r\n");
+    UART_Printf("[2/4] Gimbal PWM...");
+    Gimbal_Init();
+    UART_Printf(" OK!\r\n");
+
+    UART_Printf("[3/4] PID Algorithm...");
+    PID_Init();
+    UART_Printf(" OK!\r\n");
+
+    UART_Printf("[4/4] UART Control Ready!\r\n");
+    UART_Printf("\r\n>>> SYSTEM ONLINE <<<\r\n");
 
     while(1)
     {
-        /* 检查是否有新命令 (来自 UART 模块的全局变量) */
+        /* --- 追踪逻辑 (K210数据触发) --- */
+        if(k210_ready)
+        {
+            k210_ready = false;
+
+            // 计算 PID 输出
+            float out_pan  = PID_Compute(&pid_pan, (float)k210_x);
+            float out_tilt = PID_Compute(&pid_tilt, (float)k210_y);
+
+            // 执行控制
+            Gimbal_Set_Pan(out_pan);
+            Gimbal_Set_Tilt(out_tilt);
+        }
+
+        /* --- 车辆控制逻辑 (蓝牙指令触发) --- */
         if(g_rx_flag)
         {
-            g_rx_flag = false; // 清除标志
+            g_rx_flag = false;
             uint8_t cmd = g_rx_char;
+            UART_Printf("CMD: 0x%02X\r\n", cmd);
+
             switch(cmd)
             {
-                case CMD_FORWARD:     Car_Forward();     break;
-                case CMD_BACKWARD:    Car_Backward();    break;
-                case CMD_SLIDE_LEFT:  Car_Slide_Left();  break;
-                case CMD_SLIDE_RIGHT: Car_Slide_Right(); break;
-                case CMD_TURN_LEFT:   Car_Turn_Left();   break;
-                case CMD_TURN_RIGHT:  Car_Turn_Right();  break;
-                case CMD_STOP_CMD:
-                case CMD_STOP:        Car_Stop();        break;
-
-                default:
-                    UART_Printf("Unknown Hex: 0x%02X\r\n", cmd);
-                    break;
+                case 0x01: Car_Forward();     break;
+                case 0x02: Car_Backward();    break;
+                case 0x03: Car_Slide_Left();  break;
+                case 0x04: Car_Slide_Right(); break;
+                case 0x05: Car_Turn_Left();   break;
+                case 0x06: Car_Turn_Right();  break;
+                case 0x07: Car_Stop();        break;
+                default:   UART_Printf("Unknown Command\r\n"); break;
             }
+        }
+
+        R_BSP_SoftwareDelay(1, BSP_DELAY_UNITS_MILLISECONDS);
+    }
 }
 
-
-        }
-        R_BSP_SoftwareDelay(10, BSP_DELAY_UNITS_MILLISECONDS);
-    }
-
-
+// 修正：提供 WarmStart 定义以消除警告
 void R_BSP_WarmStart(bsp_warm_start_event_t event)
 {
     if (BSP_WARM_START_RESET == event)
